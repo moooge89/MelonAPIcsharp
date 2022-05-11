@@ -11,7 +11,7 @@ namespace MelonAPI.Repository.impl
 
         private readonly IUserRepository userRepository;
 
-        public AuthRepository(IConfiguration configuration, IUserRepository userRepository)
+        public AuthRepository(IConfiguration configuration,IUserRepository userRepository)
         {
             this.configuration = configuration;
             this.userRepository = userRepository;
@@ -49,7 +49,7 @@ namespace MelonAPI.Repository.impl
 
         private void ClearSessionByUserId(int userId)
         {
-            string query = $"delete from auth where userId = {userId}";
+            string query = $"delete from auth where user_id = {userId}";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
 
@@ -66,7 +66,7 @@ namespace MelonAPI.Repository.impl
 
             string token = GenerateId();
 
-            string query = $"insert into auth (token, userId) values ('{token}', '{userId}');";
+            string query = $"insert into auth (token, user_id) values ('{token}', '{userId}');";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
 

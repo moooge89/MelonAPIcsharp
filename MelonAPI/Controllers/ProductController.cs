@@ -11,21 +11,33 @@ namespace MelonAPI.Controllers
 
         private readonly IProductRepository productRepository;
 
-        public ProductController(IProductRepository productRepository)
+        private readonly IContextRepository contextRepository;
+
+        public ProductController(IProductRepository productRepository,
+                                 IContextRepository contextRepository)
         {
             this.productRepository = productRepository;
+            this.contextRepository = contextRepository;
         }
 
         [HttpGet("/product/{id}")]
         public Product Get(int Id)
         {
-            return productRepository.LoadProductById(Id, 1);
+            Request.Headers.TryGetValue("token", out var token);
+
+            int userId = contextRepository.LoadCurrentUserId(token.ToString());
+
+            return productRepository.LoadProductById(Id, userId);
         }
 
         [HttpGet("/product/category/{id}")]
         public List<ProductLight> GetByCategoryId(int Id)
         {
-            return productRepository.LoadProductByCategoryId(Id, 1);
+            Request.Headers.TryGetValue("token", out var token);
+
+            int userId = contextRepository.LoadCurrentUserId(token.ToString());
+
+            return productRepository.LoadProductByCategoryId(Id, userId);
         }
 
     }

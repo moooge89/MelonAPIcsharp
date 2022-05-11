@@ -16,7 +16,6 @@ namespace MelonAPI.Repository.impl
 
         public int LoadCurrentUserId(string token)
         {
-
             if (token == null)
             {
                 throw new RestException($"Authorize into system");
