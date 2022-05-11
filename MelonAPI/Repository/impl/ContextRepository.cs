@@ -21,7 +21,7 @@ namespace MelonAPI.Repository.impl
                 throw new RestException($"Authorize into system");
             }
 
-            string query = $"select userId as id from auth where token = '{token}'";
+            string query = $"select user_id as id from auth where token = '{token}'";
 
             DataTable dataTable = new();
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
