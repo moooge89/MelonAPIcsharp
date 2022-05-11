@@ -16,17 +16,16 @@ namespace MelonAPI.Controllers
             this.productRepository = productRepository;
         }
 
-
         [HttpGet("/product/{id}")]
         public Product Get(int Id)
         {
-            return productRepository.LoadProductById(Id);
+            return productRepository.LoadProductById(Id, 1);
         }
 
         [HttpGet("/product/category/{id}")]
-        public List<Product> GetByCategoryId(int Id)
+        public List<ProductLight> GetByCategoryId(int Id)
         {
-            return productRepository.LoadProductByCategoryId(Id);
+            return productRepository.LoadProductByCategoryId(Id, 1);
         }
 
     }

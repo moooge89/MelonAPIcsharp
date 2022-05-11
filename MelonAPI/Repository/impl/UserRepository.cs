@@ -17,7 +17,7 @@ namespace MelonAPI.Repository.impl
 
         public int CreateUser(LoginInfo loginInfo)
         {
-            string query = $"insert into user_ (email, password) values ({loginInfo.email}, {loginInfo.email});";
+            string query = $"insert into user_ (email, password) values ('{loginInfo.email}', '{loginInfo.email}');";
             
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
 
@@ -30,12 +30,12 @@ namespace MelonAPI.Repository.impl
                 con.Close();
             }
 
-            return FindUserByEmailAndPassword(loginInfo).id;
+            return LoadUserByEmailAndPassword(loginInfo).id;
         }
 
-        public User FindUserByEmailAndPassword(LoginInfo loginInfo)
+        public User LoadUserByEmailAndPassword(LoginInfo loginInfo)
         {
-            string query = $"select * from user_ where email = {loginInfo.email} and password = {loginInfo.password};";
+            string query = $"select * from user_ where email = '{loginInfo.email}' and password = '{loginInfo.password}';";
 
             DataTable dataTable = new();
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");

@@ -4,7 +4,7 @@ namespace MelonAPI.Repository
 {
     public interface IUserRepository
     {
-        User FindUserByEmailAndPassword(LoginInfo loginInfo);
+        User LoadUserByEmailAndPassword(LoginInfo loginInfo);
 
         int CreateUser(LoginInfo loginInfo);
     }

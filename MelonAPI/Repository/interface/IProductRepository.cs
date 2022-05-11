@@ -4,8 +4,8 @@ namespace MelonAPI.Repository
 {
     public interface IProductRepository
     {
-        Product LoadProductById(int id);
+        Product LoadProductById(int productId, int userId);
 
-        List<Product> LoadProductByCategoryId(int categoryId);
+        List<ProductLight> LoadProductByCategoryId(int categoryId, int userId);
     }
 }

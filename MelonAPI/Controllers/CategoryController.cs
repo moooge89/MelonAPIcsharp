@@ -16,7 +16,6 @@ namespace MelonAPI.Controllers
             this.categoryRepository = categoryRepository;
         }
 
-
         [HttpGet]
         public List<Category> Get()
         {

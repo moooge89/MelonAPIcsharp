@@ -24,7 +24,7 @@ namespace MelonAPI.Repository.impl
                 throw new RestException("Credientials cannot be null");
             }
 
-            User user = userRepository.FindUserByEmailAndPassword(loginInfo);
+            User user = userRepository.LoadUserByEmailAndPassword(loginInfo);
             
             if (user == null)
             {
@@ -66,7 +66,7 @@ namespace MelonAPI.Repository.impl
 
             string token = GenerateId();
 
-            string query = $"insert into auth (token, userId) values ({token}, {userId});";
+            string query = $"insert into auth (token, userId) values ('{token}', '{userId}');";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
 

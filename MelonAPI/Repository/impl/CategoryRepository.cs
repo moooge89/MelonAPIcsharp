@@ -17,7 +17,6 @@ namespace MelonAPI.Repository.impl
 
         Category ICategoryRepository.LoadCategoryById(int Id)
         {
-
             string query = $"select * from category where id = {Id}";
 
             DataTable dataTable = new();

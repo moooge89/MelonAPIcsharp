@@ -1,56 +1,104 @@
 ﻿using MelonAPI.Model;
 using MelonAPI.Model.exception;
+using Npgsql;
+using System.Data;
 
 namespace MelonAPI.Repository.impl
 {
     public class ProductRepository : IProductRepository
     {
 
-        private List<Product> products = new List<Product> { };
+        private readonly IConfiguration configuration;
 
-        public ProductRepository(ICategoryRepository categoryRepository)
+        public ProductRepository(IConfiguration configuration)
         {
-            Product product1 = new Product();
-            product1.Id = 1;
-            product1.Name = "Product Name1";
-            product1.Description = "Product Description1";
-            product1.Manufacturer = "Product Manufacturer1";
-            product1.Price = 10000.0;
-            product1.Category = categoryRepository.LoadCategoryById(1);
-            products.Add(product1);
-
-            Product product2 = new Product();
-            product2.Id = 2;
-            product2.Name = "Product Name2";
-            product2.Description = "Product Description2";
-            product2.Manufacturer = "Product Manufacturer2";
-            product2.Price = 20000.0;
-            product2.Category = categoryRepository.LoadCategoryById(2);
-            products.Add(product2);
-
-            Product product3 = new Product();
-            product3.Id = 3;
-            product3.Name = "Product Name3";
-            product3.Description = "Product Description3";
-            product3.Manufacturer = "Product Manufacturer3";
-            product3.Price = 30000.0;
-            product3.Category = categoryRepository.LoadCategoryById(3);
-            products.Add(product3);
+            this.configuration = configuration;
         }
         
-        public List<Product> LoadProductByCategoryId(int CategoryId)
+        public List<ProductLight> LoadProductByCategoryId(int CategoryId, int userId)
         {
-            return products.Where(p => p.Category?.Id == CategoryId).ToList();
+            string query = $"select * from product where category_id = {CategoryId}";
+
+            DataTable dataTable = new();
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+                dataReader = command.ExecuteReader();
+                dataTable.Load(dataReader);
+
+                dataReader.Close();
+                con.Close();
+            }
+
+            List<ProductLight> products = new();
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                ProductLight product = new()
+                {
+                    Id = row.Field<int>("id"),
+                    Name = row.Field<string>("name"),
+                    Price = row.Field<decimal>("price"),
+                    CategoryId = row.Field<int>("category_id"),
+                    IsInCart = false,
+                    IsInWishlist = false,
+                };
+                products.Add(product);
+            }
+
+            return products;
         }
 
-        public Product LoadProductById(int Id)
+        public Product LoadProductById(int productId, int userId)
         {
-            var product = products.Where(p => p.Id == Id).FirstOrDefault();
+            string query = @$"select p.id as product_id, p.name as product_name,
+                            p.description, p.price, p.count, p.manufacturer,
+                            p.category_id, c.id as category_id, c.name as category_name
+                            from product p, category c where p.category_id = c.id and p.id = {productId};";
 
-            if (product == null)
+            DataTable dataTable = new();
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
+
+            using (NpgsqlConnection con = new(sqlDataSource))
             {
-                throw new IdNotFoundException($"Product with id {Id} was not found");
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+                dataReader = command.ExecuteReader();
+                dataTable.Load(dataReader);
+
+                dataReader.Close();
+                con.Close();
             }
+
+            if (dataTable.Rows.Count != 1)
+            {
+                throw new IdNotFoundException($"Product with id {productId} was not found");
+            }
+
+            Product product = new()
+            {
+                Id = dataTable.Rows[0].Field<int>("product_id"),
+                Name = dataTable.Rows[0].Field<string>("product_name"),
+                Description = dataTable.Rows[0].Field<string>("description"),
+                Price = dataTable.Rows[0].Field<decimal>("price"),
+                Count = dataTable.Rows[0].Field<int>("count"),
+                Manufacturer = dataTable.Rows[0].Field<string>("manufacturer"),
+            };
+
+            Category category = new()
+            {
+                Id = dataTable.Rows[0].Field<int>("category_id"),
+                Name = dataTable.Rows[0].Field<string>("category_name"),
+            };
+
+            product.Category = category;
 
             return product;
         }
