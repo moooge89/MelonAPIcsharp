@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MelonAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/wishlist")]
     [ApiController]
     public class WishlistController : ControllerBase
     {
