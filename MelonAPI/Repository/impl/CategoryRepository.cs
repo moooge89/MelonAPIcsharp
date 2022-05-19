@@ -17,7 +17,7 @@ namespace MelonAPI.Repository.impl
 
         Category ICategoryRepository.LoadCategoryById(int Id)
         {
-            string query = $"select * from category where id = {Id}";
+            string query = $"select * from category;";
 
             DataTable dataTable = new();
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
@@ -35,16 +35,23 @@ namespace MelonAPI.Repository.impl
                 con.Close();
             }
 
-            if (dataTable.Rows.Count != 1)
+            List<Category> categories = new List<Category>();
+
+            foreach (DataRow row in dataTable.Rows)
             {
-                throw new IdNotFoundException($"Category with id {Id} was not found");
+                categories.Add(new Category()
+                {
+                    Id = row.Field<int>("id"),
+                    Name = row.Field<string>("name"),
+                });
             }
 
-            Category category = new()
+            Category category = categories.Where(category => category.Id == Id).FirstOrDefault(new Category());
+
+            if (category == null)
             {
-                Id = dataTable.Rows[0].Field<int>("id"),
-                Name = dataTable.Rows[0].Field<string>("name")
-            };
+                throw new IdNotFoundException($"Category with ID {Id} not found");
+            }
 
             return category;
         }
