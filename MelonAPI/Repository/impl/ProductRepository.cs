@@ -63,6 +63,7 @@ namespace MelonAPI.Repository.impl
             string query = @$"select p.id as product_id, p.name as product_name,
                               p.description, p.price, p.count, p.manufacturer,
                               p.category_id, c.id as category_id, c.name as category_name,
+                              p.image_id as image_id,
                               (select exists (select * from wishlist w where w.product_id = p.id and w.user_id = {userId})) as is_wishlist,
                               (select exists (select * from cart where cart.product_id = p.id and cart.user_id = {userId})) as is_cart
                               from product p, category c
@@ -100,6 +101,7 @@ namespace MelonAPI.Repository.impl
                 Manufacturer = dataTable.Rows[0].Field<string>("manufacturer"),
                 IsInWishlist = dataTable.Rows[0].Field<bool>("is_wishlist"),
                 IsInCart = dataTable.Rows[0].Field<bool>("is_cart"),
+                ImageId = dataTable.Rows[0].Field<int?>("image_id"),
             };
 
             Category category = new()

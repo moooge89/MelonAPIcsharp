@@ -20,5 +20,7 @@
         
         public bool IsInCart { get; set; }
 
+        public int? ImageId { get; set; }
+
     }
 }
