@@ -41,12 +41,13 @@ namespace MelonAPI.Repository.impl
             {
                 categories.Add(new Category()
                 {
-                    Id = row.Field<int>("id"),
-                    Name = row.Field<string>("name"),
+                    id = row.Field<int>("id"),
+                    name = row.Field<string>("name"),
+                    icon = row.Field<byte[]?>("content"),
                 });
             }
 
-            Category category = categories.Where(category => category.Id == Id).FirstOrDefault(new Category());
+            Category category = categories.Where(category => category.id == Id).FirstOrDefault(new Category());
 
             if (category == null)
             {
@@ -82,8 +83,9 @@ namespace MelonAPI.Repository.impl
             {
                 Category category = new()
                 {
-                    Id = row.Field<int>("id"),
-                    Name = row.Field<string>("name")
+                    id = row.Field<int>("id"),
+                    name = row.Field<string>("name"),
+                    icon = row.Field <byte[]?>("content"),
                 };
                 categories.Add(category);
             }
@@ -93,8 +95,8 @@ namespace MelonAPI.Repository.impl
 
         Category ICategoryRepository.SaveCategory(Category category)
         {
-            string query = @$"insert into category (name, image_id) values
-                           ('{category.Name}', {category.ImageId})
+            string query = @$"insert into category (name, content) values
+                           ('{category.name}', @image)
                            returning id;";
 
             DataTable dataTable = new();
@@ -106,6 +108,14 @@ namespace MelonAPI.Repository.impl
                 con.Open();
 
                 using NpgsqlCommand command = new(query, con);
+
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "image";
+                parameter.Value = category.icon;
+
+                command.Parameters.Add(parameter);
+
+
                 dataReader = command.ExecuteReader();
                 dataTable.Load(dataReader);
 
@@ -115,7 +125,7 @@ namespace MelonAPI.Repository.impl
 
             DataRow dataRow = dataTable.Rows[0];
 
-            category.Id = dataRow.Field<int>("id");
+            category.id = dataRow.Field<int>("id");
 
             return category;
         }

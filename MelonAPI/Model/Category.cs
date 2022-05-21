@@ -2,18 +2,13 @@
 {
     public class Category
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
+        public int id { get; set; }
+        public string? name { get; set; }
 
-        public int? ImageId { get; set; }
+        public byte[]? icon { get; set; }
         
         public Category() { }
 
-        public Category(int Id, string Name)
-        {
-            this.Id = Id;
-            this.Name = Name;
-        }
     
     }
 }
