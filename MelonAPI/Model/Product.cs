@@ -2,27 +2,25 @@
 {
     public class Product
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public string? Name { get; set; }
+        public string? name { get; set; }
 
-        public string? Description { get; set; }
+        public string? description { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal price { get; set; }
 
-        public int Count { get; set; }
+        public int count { get; set; }
 
-        public Category? Category { get; set; }
+        public Category? category { get; set; }
 
-        public string? Manufacturer { get; set; }
+        public string? manufacturer { get; set; }
 
-        public bool IsInWishlist { get; set; }
+        public bool isInWishlist { get; set; }
         
-        public bool IsInCart { get; set; }
+        public bool isInCart { get; set; }
 
-        public int? ImageId { get; set; }
-
-        public int? CategoryId { get; set; }
+        public byte[]? image { get; set; }
 
     }
 }

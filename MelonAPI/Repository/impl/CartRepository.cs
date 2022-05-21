@@ -70,7 +70,7 @@ namespace MelonAPI.Repository.impl
         public List<Product> LoadCartProducts(int userId)
         {
             string query = @$"select p.id as p_id, p.name as p_name, p.description as p_description,
-                              p.price as p_price, p.count as p_count, p.manufacturer as p_manufacturer,
+                              p.price as p_price, p.count as p_count, p.manufacturer as p_manufacturer, p.content as image
                               c.id as c_id, c.name as c_name
                               from product p, cart, category c
                               where cart.user_id = {userId}
@@ -99,19 +99,20 @@ namespace MelonAPI.Repository.impl
             {
                 Product product = new()
                 {
-                    Id = row.Field<int>("p_id"),
-                    Name = row.Field<string>("p_name"),
-                    Description = row.Field<string>("p_description"),
-                    Price = row.Field<decimal>("p_price"),
-                    Count = row.Field<int>("p_count"),
-                    Manufacturer = row.Field<string>("p_manufacturer"),
-                    IsInCart = true,
+                    id = row.Field<int>("p_id"),
+                    name = row.Field<string>("p_name"),
+                    description = row.Field<string>("p_description"),
+                    price = row.Field<decimal>("p_price"),
+                    count = row.Field<int>("p_count"),
+                    manufacturer = row.Field<string>("p_manufacturer"),
+                    isInCart = true,
+                    image = row.Field<byte[]>("image"),
                 };
 
-                product.Category = new()
+                product.category = new()
                 {
-                    Id = row.Field<int>("c_id"),
-                    Name = row.Field<string>("c_name"),
+                    id = row.Field<int>("c_id"),
+                    name = row.Field<string>("c_name"),
                 };
 
                 products.Add(product);

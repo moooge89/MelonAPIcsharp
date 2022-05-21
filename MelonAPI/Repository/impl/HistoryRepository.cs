@@ -16,7 +16,7 @@ namespace MelonAPI.Repository.impl
 
         public Dictionary<int, List<ProductLight>> LoadHistories(int userId)
         {
-            string query = @$"select history_id, h.product_id as product_id, p.name as p_name, price, category_id,
+            string query = @$"select history_id, h.product_id as product_id, p.name as p_name, price, category_id, p.content as image,
                               (select exists (select * from wishlist w where w.product_id = h.product_id and w.user_id = {userId})) as is_wishlist,
                               (select exists (select * from cart where cart.product_id = h.product_id and cart.user_id = {userId})) as is_cart
                               from history h, product p
@@ -48,12 +48,13 @@ namespace MelonAPI.Repository.impl
 
                 ProductLight productLight = new()
                 {
-                    Id = row.Field<int>("product_id"),
-                    Name = row.Field<string>("p_name"),
-                    Price = row.Field<decimal>("price"),
-                    CategoryId = row.Field<int>("category_id"),
-                    IsInWishlist = row.Field<bool>("is_wishlist"),
-                    IsInCart = row.Field<bool>("is_cart"),
+                    id = row.Field<int>("product_id"),
+                    name = row.Field<string>("p_name"),
+                    price = row.Field<decimal>("price"),
+                    categoryId = row.Field<int>("category_id"),
+                    isInWishlist = row.Field<bool>("is_wishlist"),
+                    isInCart = row.Field<bool>("is_cart"),
+                    image = row.Field<byte[]?>("image"),
                 };
 
                 List<ProductLight> list = dictionary.GetValueOrDefault(historyId, new List<ProductLight>());

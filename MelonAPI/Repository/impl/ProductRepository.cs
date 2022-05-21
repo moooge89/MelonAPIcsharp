@@ -17,7 +17,7 @@ namespace MelonAPI.Repository.impl
         
         public List<ProductLight> LoadProductByCategoryId(int CategoryId, int userId)
         {
-            string query = @$"select p.id as id, p.name as name, p.price as price, p.category_id as category_id,
+            string query = @$"select p.id as id, p.name as name, p.price as price, p.category_id as category_id, p.content as image,
                            (select exists(select * from wishlist w where w.product_id = p.id and w.user_id = {userId})) as is_wishlist,
                            (select exists(select * from cart where cart.product_id = p.id and cart.user_id = {userId})) as is_cart
                            from product p
@@ -45,12 +45,13 @@ namespace MelonAPI.Repository.impl
             {
                 ProductLight product = new()
                 {
-                    Id = row.Field<int>("id"),
-                    Name = row.Field<string>("name"),
-                    Price = row.Field<decimal>("price"),
-                    CategoryId = row.Field<int>("category_id"),
-                    IsInCart = row.Field<bool>("is_cart"),
-                    IsInWishlist = row.Field<bool>("is_wishlist"),
+                    id = row.Field<int>("id"),
+                    name = row.Field<string>("name"),
+                    price = row.Field<decimal>("price"),
+                    categoryId = row.Field<int>("category_id"),
+                    isInCart = row.Field<bool>("is_cart"),
+                    isInWishlist = row.Field<bool>("is_wishlist"),
+                    image = row.Field<byte[]?>("image"),
                 };
                 products.Add(product);
             }
@@ -63,7 +64,7 @@ namespace MelonAPI.Repository.impl
             string query = @$"select p.id as product_id, p.name as product_name,
                               p.description, p.price, p.count, p.manufacturer,
                               p.category_id, c.id as category_id, c.name as category_name,
-                              p.image_id as image_id,
+                              p.content as image,
                               (select exists (select * from wishlist w where w.product_id = p.id and w.user_id = {userId})) as is_wishlist,
                               (select exists (select * from cart where cart.product_id = p.id and cart.user_id = {userId})) as is_cart
                               from product p, category c
@@ -93,24 +94,24 @@ namespace MelonAPI.Repository.impl
 
             Product product = new()
             {
-                Id = dataTable.Rows[0].Field<int>("product_id"),
-                Name = dataTable.Rows[0].Field<string>("product_name"),
-                Description = dataTable.Rows[0].Field<string>("description"),
-                Price = dataTable.Rows[0].Field<decimal>("price"),
-                Count = dataTable.Rows[0].Field<int>("count"),
-                Manufacturer = dataTable.Rows[0].Field<string>("manufacturer"),
-                IsInWishlist = dataTable.Rows[0].Field<bool>("is_wishlist"),
-                IsInCart = dataTable.Rows[0].Field<bool>("is_cart"),
-                ImageId = dataTable.Rows[0].Field<int?>("image_id"),
+                id = dataTable.Rows[0].Field<int>("product_id"),
+                name = dataTable.Rows[0].Field<string>("product_name"),
+                description = dataTable.Rows[0].Field<string>("description"),
+                price = dataTable.Rows[0].Field<decimal>("price"),
+                count = dataTable.Rows[0].Field<int>("count"),
+                manufacturer = dataTable.Rows[0].Field<string>("manufacturer"),
+                isInWishlist = dataTable.Rows[0].Field<bool>("is_wishlist"),
+                isInCart = dataTable.Rows[0].Field<bool>("is_cart"),
+                image = dataTable.Rows[0].Field<byte[]?>("image"),
             };
 
             Category category = new()
             {
-                Id = dataTable.Rows[0].Field<int>("category_id"),
-                Name = dataTable.Rows[0].Field<string>("category_name"),
+                id = dataTable.Rows[0].Field<int>("category_id"),
+                name = dataTable.Rows[0].Field<string>("category_name"),
             };
 
-            product.Category = category;
+            product.category = category;
 
             return product;
         }
@@ -118,8 +119,8 @@ namespace MelonAPI.Repository.impl
         public Product SaveProduct(Product product)
         {
             string query = @$"insert into product (name, description, price, count, manufacturer, category_id, image_id) values
-                           ('{product.Name}', '{product.Description}', {product.Price}, {product.Count}, '{product.Manufacturer}'),
-                           {product.CategoryId}, {product.ImageId}
+                           ('{product.name}', '{product.description}', {product.price}, {product.count}, '{product.manufacturer}'),
+                           {product.category?.id}, @image
                            returning id;";
 
             DataTable dataTable = new();
@@ -131,6 +132,13 @@ namespace MelonAPI.Repository.impl
                 con.Open();
 
                 using NpgsqlCommand command = new(query, con);
+
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "image";
+                parameter.Value = product.image;
+
+                command.Parameters.Add(parameter);
+
                 dataReader = command.ExecuteReader();
                 dataTable.Load(dataReader);
 
@@ -140,7 +148,7 @@ namespace MelonAPI.Repository.impl
 
             DataRow dataRow = dataTable.Rows[0];
 
-            product.Id = dataRow.Field<int>("id");
+            product.id = dataRow.Field<int>("id");
 
             return product;
         }

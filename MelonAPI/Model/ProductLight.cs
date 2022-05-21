@@ -2,16 +2,18 @@
 {
     public class ProductLight
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public string? Name { get; set; }
+        public string? name { get; set; }
         
-        public decimal Price { get; set; }
+        public decimal price { get; set; }
         
-        public int CategoryId { get; set; }
+        public int categoryId { get; set; }
         
-        public bool IsInWishlist { get; set; }
+        public bool isInWishlist { get; set; }
         
-        public bool IsInCart { get; set; }
+        public bool isInCart { get; set; }
+
+        public byte[]? image { get; set; }
     }
 }

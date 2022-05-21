@@ -115,7 +115,6 @@ namespace MelonAPI.Repository.impl
 
                 command.Parameters.Add(parameter);
 
-
                 dataReader = command.ExecuteReader();
                 dataTable.Load(dataReader);
 
