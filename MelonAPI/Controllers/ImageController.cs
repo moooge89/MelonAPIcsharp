@@ -23,13 +23,13 @@ namespace MelonAPI.Controllers
         }
 
         [HttpPost("/image"), DisableRequestSizeLimit]
-        public void Post([FromForm] IFormFile file)
+        public int Post([FromForm] IFormFile file)
         {
             using (var ms = new MemoryStream())
             {
                 file.CopyTo(ms);
                 var fileBytes = ms.ToArray();
-                imageRepository.UploadImage(fileBytes);
+                return imageRepository.UploadImage(fileBytes);
                 
             }
         }

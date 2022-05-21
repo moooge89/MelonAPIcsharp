@@ -90,5 +90,34 @@ namespace MelonAPI.Repository.impl
 
             return categories;
         }
+
+        Category ICategoryRepository.SaveCategory(Category category)
+        {
+            string query = @$"insert into category (name, image_id) values
+                           ('{category.Name}', {category.ImageId})
+                           returning id;";
+
+            DataTable dataTable = new();
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+                dataReader = command.ExecuteReader();
+                dataTable.Load(dataReader);
+
+                dataReader.Close();
+                con.Close();
+            }
+
+            DataRow dataRow = dataTable.Rows[0];
+
+            category.Id = dataRow.Field<int>("id");
+
+            return category;
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace MelonAPI.Repository.impl
 
         public Byte[] DownloadImage(int imageId)
         {
+
             string query = $"select content from image where id = {imageId}";
 
             DataTable dataTable = new();
@@ -56,12 +57,14 @@ namespace MelonAPI.Repository.impl
             return content;
         }
 
-        public void UploadImage(byte[] image)
+        public int UploadImage(byte[] image)
         {
 
-            string query = $"insert into image (content) values (@image);";
+            string query = $"insert into image (content) values (@image) returning id;";
 
+            DataTable dataTable = new();
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
 
             using NpgsqlConnection con = new(sqlDataSource);
             con.Open();
@@ -73,10 +76,16 @@ namespace MelonAPI.Repository.impl
 
             command.Parameters.Add(parameter);
 
-            command.ExecuteReader();
+            dataReader = command.ExecuteReader();
+            dataTable.Load(dataReader);
+
+            dataReader.Close();
 
             con.Close();
 
+            DataRow dataRow = dataTable.Rows[0];
+
+            return dataRow.Field<int>("id");
         }
     }
 }

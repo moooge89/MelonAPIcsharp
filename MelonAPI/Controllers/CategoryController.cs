@@ -1,5 +1,5 @@
 ﻿using MelonAPI.Model;
-using MelonAPI.Repository;
+using MelonAPI.Repository.impl;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MelonAPI.Controllers
@@ -26,6 +26,12 @@ namespace MelonAPI.Controllers
         public Category GetById(int id)
         {
             return categoryRepository.LoadCategoryById(id);
+        }
+
+        [HttpPost("/category")]
+        public Category Save([FromBody] Category category)
+        {
+            return categoryRepository.SaveCategory(category);
         }
 
     }

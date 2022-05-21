@@ -4,6 +4,6 @@
     {
         Byte[] DownloadImage(int imageId);
 
-        void UploadImage(byte[] image);
+        int UploadImage(byte[] image);
     }
 }
