@@ -1,6 +1,6 @@
 ﻿using MelonAPI.Model;
 
-namespace MelonAPI.Repository.impl
+namespace MelonAPI.Repository
 {
     public interface ICategoryRepository
     {

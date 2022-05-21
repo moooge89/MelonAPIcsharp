@@ -7,5 +7,7 @@ namespace MelonAPI.Repository
         Product LoadProductById(int productId, int userId);
 
         List<ProductLight> LoadProductByCategoryId(int categoryId, int userId);
+
+        Product SaveProduct(Product product);
     }
 }

@@ -114,5 +114,35 @@ namespace MelonAPI.Repository.impl
 
             return product;
         }
+
+        public Product SaveProduct(Product product)
+        {
+            string query = @$"insert into product (name, description, price, count, manufacturer, category_id, image_id) values
+                           ('{product.Name}', '{product.Description}', {product.Price}, {product.Count}, '{product.Manufacturer}'),
+                           {product.CategoryId}, {product.ImageId}
+                           returning id;";
+
+            DataTable dataTable = new();
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+                dataReader = command.ExecuteReader();
+                dataTable.Load(dataReader);
+
+                dataReader.Close();
+                con.Close();
+            }
+
+            DataRow dataRow = dataTable.Rows[0];
+
+            product.Id = dataRow.Field<int>("id");
+
+            return product;
+        }
     }
 }

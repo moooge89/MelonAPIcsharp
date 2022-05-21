@@ -40,6 +40,12 @@ namespace MelonAPI.Controllers
             return productRepository.LoadProductByCategoryId(Id, userId);
         }
 
+        [HttpPost("/product")]
+        public Product Save([FromBody] Product product)
+        {
+            return productRepository.SaveProduct(product);
+        }
+
     }
 
 }

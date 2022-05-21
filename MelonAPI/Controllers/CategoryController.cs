@@ -1,5 +1,5 @@
 ﻿using MelonAPI.Model;
-using MelonAPI.Repository.impl;
+using MelonAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MelonAPI.Controllers

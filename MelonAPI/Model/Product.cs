@@ -22,5 +22,7 @@
 
         public int? ImageId { get; set; }
 
+        public int? CategoryId { get; set; }
+
     }
 }
