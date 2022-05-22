@@ -54,12 +54,46 @@ namespace MelonAPI.Repository.impl
                 throw new IdNotFoundException($"Category with ID {Id} not found");
             }
 
+            category.productCount = GetCountOfProducts(Id);
+
             return category;
+        }
+
+        private int GetCountOfProducts(int CategoryId)
+        {
+            string query = $"select category_id from product;";
+
+            DataTable dataTable = new();
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+            NpgsqlDataReader dataReader;
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+                dataReader = command.ExecuteReader();
+                dataTable.Load(dataReader);
+
+                dataReader.Close();
+                con.Close();
+            }
+
+            List<int?> categoryIds = new List<int?>();
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                categoryIds.Add(row.Field<int?>("category_id"));
+            }
+
+            return categoryIds.Where(id => id == CategoryId).Count();
         }
 
         List<Category> ICategoryRepository.LoadAllCategories()
         {
-            string query = $"select * from category";
+            string query = @$"select c.id as id, c.name as name, c.content as content,
+                           (select count(*)::int from product where category_id = c.id) as product_count
+                           from category c;";
 
             DataTable dataTable = new();
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
@@ -86,6 +120,7 @@ namespace MelonAPI.Repository.impl
                     id = row.Field<int>("id"),
                     name = row.Field<string>("name"),
                     icon = row.Field <byte[]?>("content"),
+                    productCount = row.Field<int?>("product_count"),
                 };
                 categories.Add(category);
             }

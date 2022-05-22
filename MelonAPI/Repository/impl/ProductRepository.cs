@@ -14,7 +14,7 @@ namespace MelonAPI.Repository.impl
         {
             this.configuration = configuration;
         }
-        
+
         public List<ProductLight> LoadProductByCategoryId(int CategoryId, int userId)
         {
             string query = @$"select p.id as id, p.name as name, p.price as price, p.category_id as category_id, p.content as image,

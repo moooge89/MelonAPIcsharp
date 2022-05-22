@@ -6,6 +6,8 @@
         public string? name { get; set; }
 
         public byte[]? icon { get; set; }
+
+        public int? productCount { get; set; }
         
         public Category() { }
 
