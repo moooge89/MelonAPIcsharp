@@ -210,5 +210,27 @@ namespace MelonAPI.Repository.impl
             con.Close();
         }
 
+        public List<ProductLight> LoadProductWithFilter(ProductFilter? filter, int userId)
+        {
+
+            if (filter == null || filter.categoryId == null)
+            {
+                throw new NullReferenceException("Filter is null");
+            }
+
+            List<ProductLight> products = LoadProductByCategoryId((int)filter.categoryId, userId);
+
+            if (filter.priceFrom == null)
+            {
+                filter.priceFrom = 0;
+            }
+
+            if (filter.priceTo == null)
+            {
+                filter.priceTo = 1000;
+            }
+
+            return products.Where(p => p.price >= filter.priceFrom && p.price <= filter.priceTo).ToList();
+        }
     }
 }

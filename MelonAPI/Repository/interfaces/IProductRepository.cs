@@ -8,6 +8,8 @@ namespace MelonAPI.Repository
 
         List<ProductLight> LoadProductByCategoryId(int categoryId, int userId);
 
+        List<ProductLight> LoadProductWithFilter(ProductFilter? filter, int userId);
+
         Product SaveProduct(Product product);
 
         Product UpdateProduct(int id, Product product);

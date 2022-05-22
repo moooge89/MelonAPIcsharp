@@ -40,6 +40,17 @@ namespace MelonAPI.Controllers
             return productRepository.LoadProductByCategoryId(Id, userId);
         }
 
+
+        [HttpGet("/product/filter")]
+        public List<ProductLight> LoadProductsWithFilter([FromBody] ProductFilter filter)
+        {
+            Request.Headers.TryGetValue("token", out var token);
+
+            int userId = contextRepository.LoadCurrentUserId(token.ToString());
+
+            return productRepository.LoadProductWithFilter(filter, userId);
+        }
+
         [HttpPost("/product")]
         public Product Save([FromBody] Product product)
         {
