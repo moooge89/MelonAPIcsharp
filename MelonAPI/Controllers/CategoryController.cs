@@ -34,6 +34,18 @@ namespace MelonAPI.Controllers
             return categoryRepository.SaveCategory(category);
         }
 
+        [HttpPut("/category/{id}")]
+        public Category Update(int id, [FromBody] Category category)
+        {
+            return categoryRepository.UpdateCategory(id, category);
+        }
+
+        [HttpDelete("/category/{id}")]
+        public void Delete(int id)
+        {
+            categoryRepository.DeleteCategoryById(id);
+        }
+
     }
 
 }

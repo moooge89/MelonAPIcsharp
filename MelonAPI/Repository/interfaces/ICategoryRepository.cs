@@ -9,5 +9,9 @@ namespace MelonAPI.Repository
         Category LoadCategoryById(int Id);
 
         Category SaveCategory(Category category);
+
+        Category UpdateCategory(int id, Category category);
+
+        void DeleteCategoryById(int Id);
     }
 }

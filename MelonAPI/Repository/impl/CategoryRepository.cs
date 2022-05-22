@@ -111,7 +111,15 @@ namespace MelonAPI.Repository.impl
 
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = "image";
-                parameter.Value = category.icon;
+
+                if (category.icon != null)
+                {
+                    parameter.Value = category.icon;
+                }
+                else
+                {
+                    parameter.Value = DBNull.Value;
+                }
 
                 command.Parameters.Add(parameter);
 
@@ -127,6 +135,59 @@ namespace MelonAPI.Repository.impl
             category.id = dataRow.Field<int>("id");
 
             return category;
+        }
+
+        public Category UpdateCategory(int id, Category category)
+        {
+            string query = @$"update category set name = '{category.name}',
+                           content = @image
+                           where id = {id};";
+
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "image";
+                if (category.icon != null)
+                {
+                    parameter.Value = category.icon;
+                }
+                else
+                {
+                    parameter.Value = DBNull.Value;
+                }
+
+                command.Parameters.Add(parameter);
+
+                command.ExecuteReader();
+
+                con.Close();
+            }
+
+            return category;
+        }
+
+        public void DeleteCategoryById(int Id)
+        {
+            string query = @$"update product set category_id = null where category_id = {Id};
+                           delete from category where id = {Id};";
+
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+
+            using NpgsqlConnection con = new(sqlDataSource);
+            con.Open();
+
+            using NpgsqlCommand command = new(query, con);
+
+            command.ExecuteNonQuery();
+
+            con.Close();
+
         }
     }
 }
