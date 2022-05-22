@@ -118,7 +118,7 @@ namespace MelonAPI.Repository.impl
 
         public Product SaveProduct(Product product)
         {
-            string query = @$"insert into product (name, description, price, count, manufacturer, category_id, image_id) values
+            string query = @$"insert into product (name, description, price, count, manufacturer, category_id, content) values
                            ('{product.name}', '{product.description}', {product.price}, {product.count}, '{product.manufacturer}'),
                            {product.category?.id}, @image
                            returning id;";
@@ -135,7 +135,14 @@ namespace MelonAPI.Repository.impl
 
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = "image";
-                parameter.Value = product.image;
+                if (product.image != null)
+                {
+                    parameter.Value = product.image;
+                }
+                else
+                {
+                    parameter.Value = DBNull.Value;
+                }
 
                 command.Parameters.Add(parameter);
 
@@ -152,5 +159,56 @@ namespace MelonAPI.Repository.impl
 
             return product;
         }
+
+        public Product UpdateProduct(int id, Product product)
+        {
+            string query = @$"update product set name = {product.name}, description = {product.description}, price = {product.price}, 
+                           count = {product.count}, manufacturer = {product.manufacturer}, category_id = {product.category?.id}, set content = @image
+                           where id = {id};";
+
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+
+            using (NpgsqlConnection con = new(sqlDataSource))
+            {
+                con.Open();
+
+                using NpgsqlCommand command = new(query, con);
+
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "image";
+                if (product.image != null)
+                {
+                    parameter.Value = product.image;
+                }
+                else
+                {
+                    parameter.Value = DBNull.Value;
+                }
+
+                command.Parameters.Add(parameter);
+
+                con.Close();
+            }
+
+            product.id = id;
+            return product;
+        }
+
+        public void DeleteProduct(int id)
+        {
+            string query = $"delete from product where id = {id};";
+
+            string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
+
+            using NpgsqlConnection con = new(sqlDataSource);
+            con.Open();
+
+            using NpgsqlCommand command = new(query, con);
+
+            command.ExecuteNonQuery();
+
+            con.Close();
+        }
+
     }
 }

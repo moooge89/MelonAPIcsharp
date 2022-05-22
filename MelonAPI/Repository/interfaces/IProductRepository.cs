@@ -9,5 +9,9 @@ namespace MelonAPI.Repository
         List<ProductLight> LoadProductByCategoryId(int categoryId, int userId);
 
         Product SaveProduct(Product product);
+
+        Product UpdateProduct(int id, Product product);
+
+        void DeleteProduct(int id);
     }
 }

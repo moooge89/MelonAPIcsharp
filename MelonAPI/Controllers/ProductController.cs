@@ -46,6 +46,18 @@ namespace MelonAPI.Controllers
             return productRepository.SaveProduct(product);
         }
 
+        [HttpPut("/product/{id}")]
+        public Product Update(int id, [FromBody] Product product)
+        {
+            return productRepository.UpdateProduct(id, product);
+        }
+
+        [HttpDelete("/product/{id}")]
+        public void Delete(int id)
+        {
+            productRepository.DeleteProduct(id);
+        }
+
     }
 
 }
