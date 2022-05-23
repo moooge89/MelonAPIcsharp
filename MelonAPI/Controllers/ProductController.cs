@@ -30,14 +30,14 @@ namespace MelonAPI.Controllers
             return productRepository.LoadProductById(Id, userId);
         }
 
-        [HttpGet("/product/category/{id}")]
-        public List<ProductLight> GetByCategoryId(int Id)
+        [HttpGet("/product/of-category")]
+        public List<ProductLight> GetByCategoryId([FromForm] int categoryId)
         {
             Request.Headers.TryGetValue("token", out var token);
 
             int userId = contextRepository.LoadCurrentUserId(token.ToString());
 
-            return productRepository.LoadProductByCategoryId(Id, userId);
+            return productRepository.LoadProductByCategoryId(categoryId, userId);
         }
 
 
