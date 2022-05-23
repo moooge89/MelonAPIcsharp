@@ -16,7 +16,8 @@ namespace MelonAPI.Repository.impl
 
         public void AddProductIntoCart(int productId, int userId)
         {
-            string query = $"insert into cart (product_id, user_id) values ({productId}, {userId});";
+            string query = @$"insert into cart (product_id, user_id) values ({productId}, {userId})
+                           on conflict (product_id, user_id) do nothing;";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
 
