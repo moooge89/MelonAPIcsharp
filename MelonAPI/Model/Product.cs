@@ -8,7 +8,7 @@
 
         public string? description { get; set; }
 
-        public decimal? price { get; set; }
+        public int? price { get; set; }
 
         public int? count { get; set; }
 

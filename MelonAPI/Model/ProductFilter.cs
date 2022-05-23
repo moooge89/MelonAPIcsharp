@@ -4,9 +4,9 @@
     {
 
         public int? categoryId { get; set; }
-        public decimal? priceFrom { get; set; }
+        public int? priceFrom { get; set; }
 
-        public decimal? priceTo { get; set; }
+        public int? priceTo { get; set; }
 
     }
 }

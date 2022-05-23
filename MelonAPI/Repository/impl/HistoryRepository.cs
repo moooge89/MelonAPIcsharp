@@ -48,12 +48,12 @@ namespace MelonAPI.Repository.impl
 
                 ProductLight productLight = new()
                 {
-                    id = row.Field<int>("product_id"),
-                    name = row.Field<string>("p_name"),
-                    price = row.Field<decimal>("price"),
-                    categoryId = row.Field<int>("category_id"),
-                    isInWishlist = row.Field<bool>("is_wishlist"),
-                    isInCart = row.Field<bool>("is_cart"),
+                    id = row.Field<int?>("product_id"),
+                    name = row.Field<string?>("p_name"),
+                    price = row.Field<int?>("price"),
+                    categoryId = row.Field<int?>("category_id"),
+                    isInWishlist = row.Field<bool?>("is_wishlist"),
+                    isInCart = row.Field<bool?>("is_cart"),
                     image = row.Field<byte[]?>("image"),
                 };
 

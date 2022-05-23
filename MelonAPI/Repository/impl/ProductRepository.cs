@@ -45,12 +45,12 @@ namespace MelonAPI.Repository.impl
             {
                 ProductLight product = new()
                 {
-                    id = row.Field<int>("id"),
-                    name = row.Field<string>("name"),
-                    price = row.Field<decimal>("price"),
-                    categoryId = row.Field<int>("category_id"),
-                    isInCart = row.Field<bool>("is_cart"),
-                    isInWishlist = row.Field<bool>("is_wishlist"),
+                    id = row.Field<int?>("id"),
+                    name = row.Field<string?>("name"),
+                    price = row.Field<int?>("price"),
+                    categoryId = row.Field<int?>("category_id"),
+                    isInCart = row.Field<bool?>("is_cart"),
+                    isInWishlist = row.Field<bool?>("is_wishlist"),
                     image = row.Field<byte[]?>("image"),
                 };
                 products.Add(product);
@@ -97,7 +97,7 @@ namespace MelonAPI.Repository.impl
                 id = dataTable.Rows[0].Field<int>("product_id"),
                 name = dataTable.Rows[0].Field<string>("product_name"),
                 description = dataTable.Rows[0].Field<string>("description"),
-                price = dataTable.Rows[0].Field<decimal>("price"),
+                price = dataTable.Rows[0].Field<int?>("price"),
                 count = dataTable.Rows[0].Field<int>("count"),
                 manufacturer = dataTable.Rows[0].Field<string>("manufacturer"),
                 isInWishlist = dataTable.Rows[0].Field<bool>("is_wishlist"),
@@ -162,8 +162,9 @@ namespace MelonAPI.Repository.impl
 
         public Product UpdateProduct(int id, Product product)
         {
-            string query = @$"update product set name = {product.name ?? ""}, description = {product.description ?? ""}, price = {product.price ?? 0}, 
-                           count = {product.count ?? 0}, manufacturer = {product.manufacturer ?? ""}, category_id = {product.category?.id}, set content = @image
+
+            string query = @$"update product set name = '{product.name ?? ""}', description = '{product.description ?? ""}', price = {product.price ?? 0}, 
+                           count = {product.count ?? 0}, manufacturer = '{product.manufacturer ?? ""}', category_id = {product.category?.id}, content = @image
                            where id = {id};";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
@@ -186,6 +187,8 @@ namespace MelonAPI.Repository.impl
                 }
 
                 command.Parameters.Add(parameter);
+
+                command.ExecuteNonQuery();
 
                 con.Close();
             }

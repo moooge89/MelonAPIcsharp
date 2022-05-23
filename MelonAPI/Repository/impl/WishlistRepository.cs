@@ -79,12 +79,12 @@ namespace MelonAPI.Repository.impl
             {
                 Product product = new()
                 {
-                    id = row.Field<int>("p_id"),
-                    name = row.Field<string>("p_name"),
-                    description = row.Field<string>("p_description"),
-                    price = row.Field<decimal>("p_price"),
-                    count = row.Field<int>("p_count"),
-                    manufacturer = row.Field<string>("p_manufacturer"),
+                    id = row.Field<int?>("p_id"),
+                    name = row.Field<string?>("p_name"),
+                    description = row.Field<string?>("p_description"),
+                    price = row.Field<int?>("p_price"),
+                    count = row.Field<int?>("p_count"),
+                    manufacturer = row.Field<string?>("p_manufacturer"),
                     isInWishlist = true,
                     image = row.Field<byte[]?>("image"),
                 };
