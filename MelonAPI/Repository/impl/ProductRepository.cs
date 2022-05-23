@@ -119,7 +119,7 @@ namespace MelonAPI.Repository.impl
         public Product SaveProduct(Product product)
         {
             string query = @$"insert into product (name, description, price, count, manufacturer, category_id, content) values
-                           ('{product.name}', '{product.description}', {product.price}, {product.count}, '{product.manufacturer}',
+                           ('{product.name ?? ""}', '{product.description ?? ""}', {product.price ?? 0}, {product.count ?? 0}, '{product.manufacturer ?? ""}',
                            {product.category?.id}, @image)
                            returning id;";
 
@@ -162,8 +162,8 @@ namespace MelonAPI.Repository.impl
 
         public Product UpdateProduct(int id, Product product)
         {
-            string query = @$"update product set name = {product.name}, description = {product.description}, price = {product.price}, 
-                           count = {product.count}, manufacturer = {product.manufacturer}, category_id = {product.category?.id}, set content = @image
+            string query = @$"update product set name = {product.name ?? ""}, description = {product.description ?? ""}, price = {product.price ?? 0}, 
+                           count = {product.count ?? 0}, manufacturer = {product.manufacturer ?? ""}, category_id = {product.category?.id}, set content = @image
                            where id = {id};";
 
             string sqlDataSource = configuration.GetConnectionString("MelonAppCon");
