@@ -119,8 +119,8 @@ namespace MelonAPI.Repository.impl
         public Product SaveProduct(Product product)
         {
             string query = @$"insert into product (name, description, price, count, manufacturer, category_id, content) values
-                           ('{product.name}', '{product.description}', {product.price}, {product.count}, '{product.manufacturer}'),
-                           {product.category?.id}, @image
+                           ('{product.name}', '{product.description}', {product.price}, {product.count}, '{product.manufacturer}',
+                           {product.category?.id}, @image)
                            returning id;";
 
             DataTable dataTable = new();
