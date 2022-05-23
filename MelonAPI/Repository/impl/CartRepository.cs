@@ -70,7 +70,7 @@ namespace MelonAPI.Repository.impl
         public List<Product> LoadCartProducts(int userId)
         {
             string query = @$"select p.id as p_id, p.name as p_name, p.description as p_description,
-                              p.price as p_price, p.count as p_count, p.manufacturer as p_manufacturer, p.content as image
+                              p.price as p_price, p.count as p_count, p.manufacturer as p_manufacturer, p.content as image,
                               c.id as c_id, c.name as c_name
                               from product p, cart, category c
                               where cart.user_id = {userId}
